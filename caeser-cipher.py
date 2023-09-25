@@ -18,19 +18,22 @@ def caeser(input_text, shift_no, direction):
 
 		temp_shift_no = shift_no
 
+		if (temp_shift_no > 25):
+			temp_shift_no %= 25
+
 		if (direction == "decode"):
 			if (position_of_letter - temp_shift_no < 0):
-				temp_shift_no = abs(shift_no) % 25
+				# bugs here
 				shift_position = 25 - temp_shift_no 
+				# print(f"shift by: {temp_shift_no}")
 			else: 
 				shift_position = position_of_letter - temp_shift_no
 
+
 		if (direction == "encode"):
 			# if (temp_shift_no > 25):
-			temp_shift_no = shift_no % 25
-			print(f"shift by: {temp_shift_no}")
-
 			shift_position = position_of_letter + temp_shift_no
+
 
 		# print(shift_position)
 		ans += alphabet[shift_position]
