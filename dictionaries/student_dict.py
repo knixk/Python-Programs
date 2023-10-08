@@ -14,16 +14,14 @@ student_grades = {}
 for student in student_scores:
     score = student_scores[student]
 
-    # fix this
-
-    if (score <= 100):
-        student_grades[student] = "Outstanding"
-    elif (score <= 90):
-        student_grades[student] = "Exceeds Expectations"
+    if (score <= 70):
+        student_grades[student] = "Fail"
     elif (score <= 80):
         student_grades[student] = "Acceptable"
-    elif (score <= 70):
-        student_grades[student] = "Fail"
+    elif (score <= 90):
+        student_grades[student] = "Exceeds Expectations"
+    elif (score <= 100):
+        student_grades[student] = "Outstanding"
 
 
 # 🚨 Don't change the code below 👇
