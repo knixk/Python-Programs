@@ -11,11 +11,12 @@ import datetime
 # In[89]:
 def extract():
     df = pd.read_csv('Updated_sales_data.csv')
+    return df
 
 
 # In[90]:
 
-def transform():
+def transform(df):
     # Finding any null values
     # df.isnull().sum()
 
@@ -66,6 +67,6 @@ def load(cleaned, total_sales_by_product):
 
 
 # ETL Pipeline
-extract()
-transform()
+df = extract()
+cleaned, total_sales_by_product = transform(df)
 load()
