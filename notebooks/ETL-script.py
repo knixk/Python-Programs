@@ -49,7 +49,7 @@ def transform(df):
     # 1. create a Boolean mask for the rows to remove
     mask = cleaned['Price Each'] == 'Price Each'
 
-    # 2. select all rows except the ones that contain 'Coca Cola'
+    # 2. select all rows except the ones that contain column names
     cleaned = cleaned[~mask]
 
     # 3. print the resulting DataFrame
@@ -155,17 +155,6 @@ def load(cleaned, total_sales_by_product):
     # saving the final files in the same working directory
     cleaned.to_csv('cleaned_data.csv')
     total_sales_by_product.to_csv('products_sale_by_month.csv')
-
-
-def insertIntoDB(df, table_name):
-
-    # try:
-    #     df.to_sql(table_name, engine, if_exists='replace', index=False)
-    # except:
-    #     print(f"Couldn't load data into {table_name} table..")
-
-    # print(f"Successfully loaded data into the {table_name} table")
-    pass
 
 
 # ------------------------x--------------------------x------------------------x---------------------
