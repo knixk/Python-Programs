@@ -63,6 +63,8 @@ def transform(df):
     # Calculating total sales
     cleaned['Quantity Ordered'] = cleaned['Quantity Ordered'].astype(int)
     cleaned['Price Each'] = cleaned['Price Each'].astype(float)
+    cleaned['Order ID'] = cleaned['Order ID'].astype(int)
+    
     cleaned['total_sales'] = cleaned['Quantity Ordered'] * cleaned['Price Each']
 
     # removing duplicated indexes
@@ -98,43 +100,30 @@ def insertIntoDB(df, table_name, myconn):
         use_db = '''USE demo;'''
 
         #Creating table as per requirement
-        create_table ='''CREATE TABLE `products` (
-            `Index` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            `Order ID` TEXT(256) NOT NULL,
+        create_table ='''
+            CREATE TABLE `products` (
+            `Order ID` INT NOT NULL PRIMARY KEY,
             `Product` TEXT(256) NOT NULL,
-            `Quantity Ordered` TEXT NOT NULL,
+            `Quantity Ordered` INT NOT NULL,
             `Price Each` FLOAT NOT NULL,
             `Order Date` DATETIME NOT NULL,
             `Purchase Address` TEXT NOT NULL,
             `total_sales` FLOAT,
             `Month` INT,
             `Year` INT
-            );
+        );
         '''
 
-        
-
         cur.execute(use_db)
-        # cur.execute(create_table)
+        cur.execute(create_table)
+
+        # cur.execute('''INSERT INTO products values (21312, 'any', 2, 23.2, '2019-04-19 08:46:00', 'asda', 23.2, 1, 2);''')
 
         # query = "use demo;"
         dbs = cur.execute("show databases")  
         # print(cur.execute(query))
 
-        cur.execute("""
-        CREATE TABLE `products` (
-        `Order ID` TEXT(256) NOT NULL,
-        `Product` TEXT(256) NOT NULL,
-        `Quantity Ordered` TEXT,
-        `Index` INT NOT NULL AUTO_INCREMENT,
-        `Price Each` FLOAT,
-        `Order Date` DATETIME,
-        `Purchase Address` TEXT,
-        `total_sales` FLOAT,
-        `Month` INT,
-        `Year` INT
-        );
-        """)
+        # cur.execute(create_table)
 
         # cur.execute("CREATE DATABASE demo")
 
@@ -194,3 +183,4 @@ load(cleaned, total_sales_by_product)
 insertIntoDB(cleaned, "products", connection)
 
 # connection.close()  
+cur.close()
