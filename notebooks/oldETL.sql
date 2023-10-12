@@ -66,7 +66,7 @@ ORDER BY MonthlyAvgSales DESC;
 -- SELECT Product, CEIL (AVG(total_sales)) AS MonthlyAvgSales
 -- FROM orders
 -- GROUP BY Product
--- ORDER BY MonthlyAvgSales DESC
+-- ORDER BY MonthlyAvgSales DESC;
 
 
 

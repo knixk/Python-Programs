@@ -1,9 +1,10 @@
-# Kanishk Shrivastava
 #!/usr/bin/env python
 # coding: utf-8
 
 import pandas as pd
 import datetime 
+# import pymysql
+# import mysql.connector 
 from sqlalchemy import create_engine
 
 # Make connection
@@ -13,14 +14,18 @@ username = "root"
 password = ""
 
 # Create the connection object   
+# connection = mysql.connector.connect(host = <host-name> , user = <username> , passwd = <password> )  
+# myconn = mysql.connector.connect(host = "localhost", user = "root", passwd = "", database = "demo")  
+
 engine = create_engine("mysql+pymysql://" + username + ":" + password + "@" + host + "/" + database)
 connection = engine.raw_connection()
-
 #printing the connection object   
 print(connection)  
 
 #creating the cursor object  
 cur = connection.cursor()
+  
+print(cur)
 
 # try:  
 #     myconn = mysql.connector.connect(host = "localhost", user = "root", passwd = "", database = "demo")  
@@ -49,7 +54,7 @@ def transform(df):
     # 1. create a Boolean mask for the rows to remove
     mask = cleaned['Price Each'] == 'Price Each'
 
-    # 2. select all rows except the ones that contain column names
+    # 2. select all rows except the ones that contain 'Coca Cola'
     cleaned = cleaned[~mask]
 
     # 3. print the resulting DataFrame
@@ -78,21 +83,28 @@ def transform(df):
     return cleaned, total_sales_by_product
 
 
+def load(cleaned, total_sales_by_product):
+
+    # saving the file in the same working directory
+    cleaned.to_csv('cleaned_data.csv')
+    total_sales_by_product.to_csv('products_sale_by_month.csv')
 
 def createSchema():
+    
+
+def insertIntoDB(df, table_name, myconn):
 
     try:  
 
-        #Dropping tables if already exist.
-        cur.execute("DROP TABLE IF EXISTS products")
-        cur.execute("DROP TABLE IF EXISTS orders")
+        #Dropping EMPLOYEE table if already exists.
+        # cur.execute("DROP TABLE IF EXISTS products")
 
         # use_db = '''USE demo'''
-        use_db = f'''USE {database};'''
+        use_db = '''USE demo;'''
 
         #Creating table as per requirement
-        create_table_orders ='''
-            CREATE TABLE `orders` (
+        create_table ='''
+            CREATE TABLE `products` (
             `Order ID` INT NOT NULL PRIMARY KEY,
             `Product` TEXT(256) NOT NULL,
             `Quantity Ordered` INT NOT NULL,
@@ -105,50 +117,56 @@ def createSchema():
         );
         '''
 
-        create_table_products = '''
-            CREATE TABLE `products` (
-            `Product` TEXT(256) NOT NULL,
-            `Year` INT,
-            `Month` INT,
-            `total_sales` FLOAT
-        );
-        '''
-
         cur.execute(use_db)
-        cur.execute(create_table_orders)
-        cur.execute(create_table_products)
+        cur.execute(create_table)
+
+        # cur.execute('''INSERT INTO products values (21312, 'any', 2, 23.2, '2019-04-19 08:46:00', 'asda', 23.2, 1, 2);''')
 
         # query = "use demo;"
         dbs = cur.execute("show databases")  
+        # print(cur.execute(query))
 
-        connection.commit()
+        # cur.execute(create_table)
+
+        # cur.execute("CREATE DATABASE demo")
+
+        # for (row, rs) in df.iterrows():
+        #     idx = str(int(rs[0]))
+        #     order_id = str(int(rs[1]))
+        #     product = (rs[2])
+        #     quantity_ordered = str(int(rs[3]))
+        #     price_each = str(float(rs[4]))
+        #     order_date = rs[5]
+        #     address = rs[6]
+        #     total_sales = str(float(rs[7]))
+        #     month = str(int(rs[8]))
+        #     year = str(int(rs[9]))
+
+        #     insert_table = f'''INSERT INTO products values (
+        #     {idx}, {order_id}, '{product}', {quantity_ordered}, {price_each}, '{order_date}', '{address}', {total_sales}, {month}, {year}
+        #     );      
+        #     '''
+        #     cur.execute(insert_table)
+        
+        # myconn.commit()
+
 
     except:  
-        connection.rollback()  
+        myconn.rollback()  
         print("Error with DB")
     for x in cur:  
         print(x)  
+    # myconn.close()  
 
-def insertIntoTable(df, table_name, idx):
-    # inserting value in table from csv with a dataframe
+
     try:
-        df.to_sql(table_name, engine, if_exists='replace', index=idx)
+        df.to_sql(table_name, engine, if_exists='replace', index=False)
     except:
         print(f"Couldn't load data into {table_name} table..")
-    finally:
-        print(f"Successfully loaded data into the {table_name} table.")
 
-
-def load(cleaned, total_sales_by_product):
-
-    # creating schema
-    createSchema()
-    insertIntoTable(cleaned, "orders", False)
-    insertIntoTable(total_sales_by_product, "products", False)
-
-    # saving the final files in the same working directory
-    cleaned.to_csv('cleaned_data.csv')
-    total_sales_by_product.to_csv('products_sale_by_month.csv')
+    print(f"Successfully loaded data into the {table_name} table")
+    # read the data
+    # df = pd.read_sql("SELECT * FROM table_name", conn)
 
 
 # ------------------------x--------------------------x------------------------x---------------------
@@ -163,6 +181,8 @@ cleaned, total_sales_by_product = transform(df)
 # 3. load
 load(cleaned, total_sales_by_product)
 
-# Closing the connection
+# inserting table with values from csv
+insertIntoDB(cleaned, "products", connection)
+
+# connection.close()  
 cur.close()
-connection.close()
