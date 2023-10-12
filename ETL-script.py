@@ -1,34 +1,26 @@
+# Kanishk Shrivastava
 #!/usr/bin/env python
 # coding: utf-8
 
 import pandas as pd
-# import numpy as np 
 import datetime 
-import pymysql
-import mysql.connector 
-from sqlalchemy import create_engine, types
+from sqlalchemy import create_engine
 
-# Make connection
+# Make connection - you need to have your own credentials.
 database = "demo"
-# url = 123
 host = "localhost"
 username = "root"
 password = ""
 
 # Create the connection object   
-# connection = mysql.connector.connect(host = <host-name> , user = <username> , passwd = <password> )  
-myconn = mysql.connector.connect(host = "localhost", user = "root", passwd = "", database = "demo")  
-
 # engine = create_engine("mysql+pymysql://" + username + ":" + password + "@" + host + "/" + database)
-# df.to_sql('SData', con = engine, if_exists = 'append',index = False, chunksize = 1000)
+# connection = engine.raw_connection()
 
 #printing the connection object   
-print(myconn)  
+# print(connection)  
 
 #creating the cursor object  
-cur = myconn.cursor()  
-  
-print(cur)
+# cur = connection.cursor()
 
 # try:  
 #     myconn = mysql.connector.connect(host = "localhost", user = "root", passwd = "", database = "demo")  
@@ -37,36 +29,24 @@ print(cur)
 # except:  
 #     print("Error connecting to database, check credentials.")
 
-# try:  
-#     dbs = cur.execute("show databases")  
-#     # cur.execute("""
-#     # CREATE TABLE `products` (
-# 	# `Order ID` TEXT(256) NOT NULL,
-# 	# `Product` TEXT(256) NOT NULL,
-# 	# `Quantity Ordered` TEXT,
-# 	# `Index` INT NOT NULL AUTO_INCREMENT,
-# 	# `Price Each` FLOAT,
-# 	# `Order Date` DATETIME,
-# 	# `Purchase Address` TEXT,
-# 	# `total_sales` FLOAT,
-# 	# `Month` INT,
-# 	# `Year` INT
-#     # );
-#     # """)
-#     # cur.execute("CREATE DATABASE demo")
-
-# except:  
-#     myconn.rollback()  
-# for x in cur:  
-#     print(x)  
-# myconn.close()  
 
 file_name = 'Updated_sales_data.csv'
+
+def connectingToDB():
+    try:
+        engine = create_engine("mysql+pymysql://" + username + ":" + password + "@" + host + "/" + database)
+        connection = engine.raw_connection()
+        cur = connection.cursor()
+
+    except:
+        # print("Error connecting to DB, check credentials or server status..")
+        raise Exception("Couldn't connect to DB, check credentials or server status..")
+
+    return engine, connection, cur
 
 def extract():
     df = pd.read_csv(file_name)
     return df
-
 
 
 def transform(df):
@@ -81,19 +61,18 @@ def transform(df):
     # 1. create a Boolean mask for the rows to remove
     mask = cleaned['Price Each'] == 'Price Each'
 
-    # 2. select all rows except the ones that contain 'Coca Cola'
+    # 2. select all rows except the ones that contain column names
     cleaned = cleaned[~mask]
 
     # 3. print the resulting DataFrame
     # print(cleaned)
 
     # Calculating total sales
-
     cleaned['Quantity Ordered'] = cleaned['Quantity Ordered'].astype(int)
     cleaned['Price Each'] = cleaned['Price Each'].astype(float)
+    cleaned['Order ID'] = cleaned['Order ID'].astype(int)
+    
     cleaned['total_sales'] = cleaned['Quantity Ordered'] * cleaned['Price Each']
-
-    # cleaned['total_sales'] = cleaned['Quantity Ordered'].astype(int) * cleaned['Price Each'].astype(float)
 
     # removing duplicated indexes
     cleaned.drop(columns=cleaned.columns[0], axis=1, inplace=True)
@@ -106,30 +85,94 @@ def transform(df):
     cleaned['Month'] = dates.dt.month
     cleaned['Year'] = dates.dt.year
 
-    # cleaned.shape
-    # cleaned.dtypes
-
     monthly_sales = cleaned.groupby(['Product', 'Year', 'Month'])['total_sales'].sum().reset_index()
     total_sales_by_product = pd.DataFrame(monthly_sales)
-    # total_sales_by_product
-
     return cleaned, total_sales_by_product
+
+
+
+def createSchema(connection, cur):
+
+    try:  
+
+        #Dropping tables if already exist.
+        cur.execute("DROP TABLE IF EXISTS products")
+        cur.execute("DROP TABLE IF EXISTS orders")
+
+        # use_db = '''USE demo'''
+        use_db = f'''USE {database};'''
+
+        #Creating table as per requirement
+        create_table_orders ='''
+            CREATE TABLE `orders` (
+            `Order ID` INT NOT NULL PRIMARY KEY,
+            `Product` TEXT(256) NOT NULL,
+            `Quantity Ordered` INT NOT NULL,
+            `Price Each` FLOAT NOT NULL,
+            `Order Date` DATETIME NOT NULL,
+            `Purchase Address` TEXT NOT NULL,
+            `total_sales` FLOAT,
+            `Month` INT,
+            `Year` INT
+        );
+        '''
+
+        create_table_products = '''
+            CREATE TABLE `products` (
+            `Product` TEXT(256) NOT NULL,
+            `Year` INT,
+            `Month` INT,
+            `total_sales` FLOAT
+        );
+        '''
+
+        cur.execute(use_db)
+        cur.execute(create_table_orders)
+        cur.execute(create_table_products)
+
+        # query = "use demo;"
+        dbs = cur.execute("show databases")  
+
+        connection.commit()
+
+    except:  
+        connection.rollback()  
+        print("Error with DB")
+        
+    print("Available databases")
+    for x in cur:  
+        print(x)  
+
+def insertIntoTable(df, table_name, idx, engine):
+    # inserting value in table from csv with a dataframe
+    try:
+        df.to_sql(table_name, engine, if_exists='replace', index=idx)
+    except:
+        print(f"Couldn't load data into {table_name} table..")
+    finally:
+        print(f"Successfully loaded data into the {table_name} table.")
 
 
 def load(cleaned, total_sales_by_product):
 
-    # saving the file in the same working directory
+    engine, connection, cur = connectingToDB()
+
+    # creating schema
+    # try:
+    #     engine = create_engine("mysql+pymysql://" + username + ":" + password + "@" + host + "/" + database)
+    # except:
+    #     print("Error connecting to DB, check credentials or server status..")
+    createSchema(connection, cur)
+    insertIntoTable(cleaned, "orders", False, engine)
+    insertIntoTable(total_sales_by_product, "products", False, engine)
+
+    # saving the final files in the same working directory
     cleaned.to_csv('cleaned_data.csv')
     total_sales_by_product.to_csv('products_sale_by_month.csv')
 
-def insertIntoDB(df, table_name, myconn):
-    # df.to_sql(table_name, myconn, if_exists='replace', index=False)
-
-    engine = create_engine("mysql+pymysql://" + username + ":" + password + "@" + host + "/" + database)
-    df.to_sql(table_name, con = engine, if_exists = 'replace', index = False, chunksize = 1000)
-
-    # read the data
-    # df = pd.read_sql("SELECT * FROM table_name", conn)
+    # Closing the connection
+    cur.close()
+    connection.close()
 
 
 # ------------------------x--------------------------x------------------------x---------------------
@@ -143,7 +186,4 @@ cleaned, total_sales_by_product = transform(df)
 
 # 3. load
 load(cleaned, total_sales_by_product)
-
-# inserting table with values from csv
-insertIntoDB(cleaned, "products", myconn)
 
