@@ -3,7 +3,6 @@
 # coding: utf-8
 
 import pandas as pd
-# import datetime 
 from sqlalchemy import create_engine
 
 # Make connection - (You need to have your own credentials).
@@ -25,6 +24,8 @@ def connectingToDB():
     except:
         raise Exception("Couldn't connect to DB, check credentials or server status..")
 
+    print("SQL connection successfull.")
+        
     return engine, connection, cur
 
 def extract():
@@ -60,7 +61,7 @@ def transform(df):
         cleaned['Price Each'] = cleaned['Price Each'].astype(float)
         cleaned['Order ID'] = cleaned['Order ID'].astype(int)
     except:
-        raise Exception("Error changing the data types of the columns. It may happen that these are invalid.")
+        raise Exception("Error changing the data types of the columns. It may happen that these datatypes are invalid.")
 
     try:
         cleaned['total_sales'] = cleaned['Quantity Ordered'] * cleaned['Price Each']
@@ -82,7 +83,6 @@ def transform(df):
     total_sales_by_product = pd.DataFrame(monthly_sales)
 
     return cleaned, total_sales_by_product
-
 
 
 def createSchema(connection, cur):
@@ -131,7 +131,8 @@ def createSchema(connection, cur):
         connection.rollback()  
         raise Exception("Error creating DB Schema..")
         
-    print("Available databases:-")
+    print(f"Available databases:- {dbs}")
+
     for x in cur:  
         print(x)  
 
@@ -141,8 +142,8 @@ def insertIntoTable(df, table_name, idx, engine):
         df.to_sql(table_name, engine, if_exists='replace', index=idx)
     except:
         raise Exception(f"Couldn't load data into {table_name} table..")
-    finally:
-        print(f"Successfully loaded data into the {table_name} table.")
+
+    print(f"Successfully loaded data into the {table_name} table.")
 
 
 def load(cleaned, total_sales_by_product):
@@ -154,11 +155,17 @@ def load(cleaned, total_sales_by_product):
     insertIntoTable(total_sales_by_product, "products", False, engine)
 
     # saving the final files in the same working directory
+    orders = 'orders.csv'
+    products = 'products_sale_by_month.csv'
+
     try:
-        cleaned.to_csv('cleaned_data.csv')
-        total_sales_by_product.to_csv('products_sale_by_month.csv')
+        cleaned.to_csv(orders)
+        total_sales_by_product.to_csv(products)
     except:
-        raise Exception(f"Error saving files onto computer.")
+        raise Exception("Error saving .csv files onto computer.")
+        
+    print(f"Saved files {orders} and {products}.")
+    print("SQL Connection closed, thank you.")
 
     # Closing the connection
     cur.close()
