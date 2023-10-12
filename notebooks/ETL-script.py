@@ -68,19 +68,24 @@ def transform(df):
     except:
         raise Exception("The data types of 'Quantity Ordered' and 'Price Each' should be: int and float")
 
-    # removing duplicated indexes
-    cleaned.drop(columns=cleaned.columns[0], axis=1, inplace=True)
 
-    # type casting date column from object to datetime
-    dates = pd.to_datetime(cleaned['Order Date'], format="mixed")
-    cleaned['Order Date'] = dates
+    try:
+        # removing duplicated indexes
+        cleaned.drop(columns=cleaned.columns[0], axis=1, inplace=True)
 
-    # creating columns for month and year
-    cleaned['Month'] = dates.dt.month
-    cleaned['Year'] = dates.dt.year
+        # type casting date column from object to datetime
+        dates = pd.to_datetime(cleaned['Order Date'], format="mixed")
+        cleaned['Order Date'] = dates
 
-    monthly_sales = cleaned.groupby(['Product', 'Year', 'Month'])['total_sales'].sum().reset_index()
-    total_sales_by_product = pd.DataFrame(monthly_sales)
+        # creating columns for month and year
+        cleaned['Month'] = dates.dt.month
+        cleaned['Year'] = dates.dt.year
+
+        monthly_sales = cleaned.groupby(['Product', 'Year', 'Month'])['total_sales'].sum().reset_index()
+        total_sales_by_product = pd.DataFrame(monthly_sales)
+
+    except:
+        raise Exception("Error performing transformations on the data..")
 
     return cleaned, total_sales_by_product
 
