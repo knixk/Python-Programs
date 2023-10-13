@@ -134,7 +134,7 @@ def createSchema(connection, cur):
 
     except:  
         connection.rollback()  
-        raise Exception("Error creating DB Schema..")
+        raise Exception("Error creating DB Schema or DB doesn't exist..")
         
     print(f"Available databases:- {dbs}")
 
