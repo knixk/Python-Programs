@@ -41,14 +41,6 @@ WHERE ((7) <= Month)
 GROUP BY Product
 ORDER BY TotalSales DESC;
 
-/* SELECT Product, CEIL (SUM(total_sales)) AS TotalSales
-FROM orders
-WHERE (Year = Year AND (9) >= Month - 2) 
-   OR (Year = Year - 1 AND Month >= 10)
-   OR (Year = Year - 1 AND Month <= 12)
-GROUP BY Product
-ORDER BY TotalSales DESC; */
-
 -- 2. Top 5 products by total sales amount - c
 
 SELECT Product, CEIL (SUM(total_sales)) AS TotalSales
@@ -62,12 +54,6 @@ SELECT Product, CEIL (SUM(total_sales) / (11 + 1)) AS MonthlyAvgSales
 FROM orders
 GROUP BY Product
 ORDER BY MonthlyAvgSales DESC;
-
--- SELECT Product, CEIL (AVG(total_sales)) AS MonthlyAvgSales
--- FROM orders
--- GROUP BY Product
--- ORDER BY MonthlyAvgSales DESC
-
 
 
 

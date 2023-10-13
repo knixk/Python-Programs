@@ -3,34 +3,17 @@
 # coding: utf-8
 
 import pandas as pd
-import datetime 
 from sqlalchemy import create_engine
 
-# Make connection - you need to have your own credentials.
+# Make connection - (You need to have your own credentials).
 database = "demo"
 host = "localhost"
 username = "root"
 password = ""
 
-# Create the connection object   
-# engine = create_engine("mysql+pymysql://" + username + ":" + password + "@" + host + "/" + database)
-# connection = engine.raw_connection()
-
-#printing the connection object   
-# print(connection)  
-
-#creating the cursor object  
-# cur = connection.cursor()
-
-# try:  
-#     myconn = mysql.connector.connect(host = "localhost", user = "root", passwd = "", database = "demo")  
-#     cur = myconn.cursor()  
-
-# except:  
-#     print("Error connecting to database, check credentials.")
-
-
 file_name = 'Updated_sales_data.csv'
+
+print("ETL Pipleline..")
 
 def connectingToDB():
     try:
@@ -39,13 +22,18 @@ def connectingToDB():
         cur = connection.cursor()
 
     except:
-        # print("Error connecting to DB, check credentials or server status..")
         raise Exception("Couldn't connect to DB, check credentials or server status..")
 
+    print("SQL connection successfull.")
+        
     return engine, connection, cur
 
 def extract():
-    df = pd.read_csv(file_name)
+    try:
+        df = pd.read_csv(file_name)
+    except: 
+        raise Exception("Couldn't read csv, are you sure the path / file is valid?")
+    
     return df
 
 
@@ -68,27 +56,38 @@ def transform(df):
     # print(cleaned)
 
     # Calculating total sales
-    cleaned['Quantity Ordered'] = cleaned['Quantity Ordered'].astype(int)
-    cleaned['Price Each'] = cleaned['Price Each'].astype(float)
-    cleaned['Order ID'] = cleaned['Order ID'].astype(int)
-    
-    cleaned['total_sales'] = cleaned['Quantity Ordered'] * cleaned['Price Each']
+    try:
+        cleaned['Quantity Ordered'] = cleaned['Quantity Ordered'].astype(int)
+        cleaned['Price Each'] = cleaned['Price Each'].astype(float)
+        cleaned['Order ID'] = cleaned['Order ID'].astype(int)
+    except:
+        raise Exception("Error changing the data types of the columns. It may happen that these datatypes are invalid.")
 
-    # removing duplicated indexes
-    cleaned.drop(columns=cleaned.columns[0], axis=1, inplace=True)
+    try:
+        cleaned['total_sales'] = cleaned['Quantity Ordered'] * cleaned['Price Each']
+    except:
+        raise Exception("The data types of 'Quantity Ordered' and 'Price Each' should be: int and float")
 
-    # type casting date column from object to datetime
-    dates = pd.to_datetime(cleaned['Order Date'], format="mixed")
-    cleaned['Order Date'] = dates
 
-    # creating columns for month and year
-    cleaned['Month'] = dates.dt.month
-    cleaned['Year'] = dates.dt.year
+    try:
+        # removing duplicated indexes
+        cleaned.drop(columns=cleaned.columns[0], axis=1, inplace=True)
 
-    monthly_sales = cleaned.groupby(['Product', 'Year', 'Month'])['total_sales'].sum().reset_index()
-    total_sales_by_product = pd.DataFrame(monthly_sales)
+        # type casting date column from object to datetime
+        dates = pd.to_datetime(cleaned['Order Date'], format="mixed")
+        cleaned['Order Date'] = dates
+
+        # creating columns for month and year
+        cleaned['Month'] = dates.dt.month
+        cleaned['Year'] = dates.dt.year
+
+        monthly_sales = cleaned.groupby(['Product', 'Year', 'Month'])['total_sales'].sum().reset_index()
+        total_sales_by_product = pd.DataFrame(monthly_sales)
+
+    except:
+        raise Exception("Error performing transformations on the data..")
+
     return cleaned, total_sales_by_product
-
 
 
 def createSchema(connection, cur):
@@ -130,16 +129,15 @@ def createSchema(connection, cur):
         cur.execute(create_table_orders)
         cur.execute(create_table_products)
 
-        # query = "use demo;"
         dbs = cur.execute("show databases")  
-
         connection.commit()
 
     except:  
         connection.rollback()  
-        print("Error with DB")
+        raise Exception("Error creating DB Schema..")
         
-    print("Available databases")
+    print(f"Available databases:- {dbs}")
+
     for x in cur:  
         print(x)  
 
@@ -148,27 +146,31 @@ def insertIntoTable(df, table_name, idx, engine):
     try:
         df.to_sql(table_name, engine, if_exists='replace', index=idx)
     except:
-        print(f"Couldn't load data into {table_name} table..")
-    finally:
-        print(f"Successfully loaded data into the {table_name} table.")
+        raise Exception(f"Couldn't load data into {table_name} table..")
+
+    print(f"Successfully loaded data into the {table_name} table.")
 
 
 def load(cleaned, total_sales_by_product):
 
     engine, connection, cur = connectingToDB()
 
-    # creating schema
-    # try:
-    #     engine = create_engine("mysql+pymysql://" + username + ":" + password + "@" + host + "/" + database)
-    # except:
-    #     print("Error connecting to DB, check credentials or server status..")
     createSchema(connection, cur)
     insertIntoTable(cleaned, "orders", False, engine)
     insertIntoTable(total_sales_by_product, "products", False, engine)
 
     # saving the final files in the same working directory
-    cleaned.to_csv('cleaned_data.csv')
-    total_sales_by_product.to_csv('products_sale_by_month.csv')
+    orders = 'orders.csv'
+    products = 'products_sale_by_month.csv'
+
+    try:
+        cleaned.to_csv(orders)
+        total_sales_by_product.to_csv(products)
+    except:
+        raise Exception("Error saving .csv files onto computer.")
+        
+    print(f"Saved files {orders} and {products}.")
+    print("SQL Connection closed, thank you.")
 
     # Closing the connection
     cur.close()
