@@ -1,6 +1,7 @@
 -- use your database inplace of demo
 use demo;
 
+-- Schema for orders table
 CREATE TABLE `orders` (
 	`Order ID` INT NOT NULL PRIMARY KEY,
     `Product` TEXT(256) NOT NULL,
@@ -13,6 +14,7 @@ CREATE TABLE `orders` (
     `Year` INT
 );
 
+-- Schema for products table
 CREATE TABLE `products` (
 	`Product` TEXT(256) NOT NULL,
 	`Year` INT,
@@ -20,36 +22,34 @@ CREATE TABLE `products` (
 	`total_sales` FLOAT
 );
 
-SELECT * from orders;
+-- After running the python script..
+describe products;
+describe orders;
 
+SELECT * from orders;
 SELECT * from products;
 
-DROP table products;
+-- Don't drop tables, just for testing
+-- DROP table products;
+-- DROP table orders;
 
-DROP table orders;
 
-describe products;
+-- INSERT query example: INSERT INTO products values ('iPhone', 2019, 3, 1231.23);
+-- INSERT query example: INSERT INTO orders values (174345, 'iPhone', 2, 11.95, '2019-04-19 08:46:00', '917 1st St, Dallas, TX 75001', 23.9, 4, 2019);
 
--- INSERT INTO products values ('any', 2233, 3, 1231.23);
+-- ------- x ------- x -------- x -------- x ----------- x ----------- x -----------------
 
--- 1. The total sales amount for each product in the last quarter (last 3 months)? - s
--- Since the last month was 9 : (september) we can say if the month is greater or equal to 7, we can include in our sum
+-- 1. The total sales amount for each product in the last quarter (last 3 months).
+-- explaination: Since the last month was 9 : (september) we can say if the month is greater or equal to 7, we can include in our sum
 
 SELECT Product, CEIL (SUM(total_sales)) AS TotalSales
 FROM orders
-WHERE ((7) <= Month) 
+WHERE ((9 - 2) <= Month) 
 GROUP BY Product
 ORDER BY TotalSales DESC;
 
-/* SELECT Product, CEIL (SUM(total_sales)) AS TotalSales
-FROM orders
-WHERE (Year = Year AND (9) >= Month - 2) 
-   OR (Year = Year - 1 AND Month >= 10)
-   OR (Year = Year - 1 AND Month <= 12)
-GROUP BY Product
-ORDER BY TotalSales DESC; */
 
--- 2. Top 5 products by total sales amount - c
+-- 2. Top 5 products by total sales amount 
 
 SELECT Product, CEIL (SUM(total_sales)) AS TotalSales
 FROM orders
@@ -57,18 +57,12 @@ GROUP BY Product
 ORDER BY TotalSales DESC
 LIMIT 5;
 
--- 3. Calculate the monthly average sales for each product over the entire dataset. - s
+-- 3. Calculate the monthly average sales for each product over the entire dataset. 
+
 SELECT Product, CEIL (SUM(total_sales) / (11 + 1)) AS MonthlyAvgSales
 FROM orders
 GROUP BY Product
 ORDER BY MonthlyAvgSales DESC;
-
--- SELECT Product, CEIL (AVG(total_sales)) AS MonthlyAvgSales
--- FROM orders
--- GROUP BY Product
--- ORDER BY MonthlyAvgSales DESC
-
-
 
 
 

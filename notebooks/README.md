@@ -7,7 +7,8 @@ In order for the script to work, you must do these steps.
 
 2. Open a command prompt or terminal and install these modules:- (You need to have python and pip installed) 
     pip install pandas
-    pip install sqlalchemy.
+    pip install sqlalchemy
+    pip install pymysql
 
 3. Need to have a working MySQL server. Specifically you need:-
     

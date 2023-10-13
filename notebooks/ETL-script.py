@@ -5,7 +5,7 @@
 import pandas as pd
 from sqlalchemy import create_engine
 
-# Make connection - (You need to have your own credentials).
+# [IMPORTANT] Make connection - (You need to have your own credentials).
 database = "demo"
 host = "localhost"
 username = "root"
