@@ -29,5 +29,7 @@ Configure these changes in the ETL-script.py file.
 ## Given more time
 I'd like to add months by their names in the products tables. Test code a bit more and fix any bugs.
 
-Thanks.
+All of the code has been pushed into:
+https://github.com/knixk/Python-Programs/tree/main/notebooks
 
+Thanks.
