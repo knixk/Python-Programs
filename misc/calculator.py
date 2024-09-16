@@ -26,9 +26,41 @@ operations = {
 }
 
 
-ans = operations["+"](23, 23)
-ans1 = operations["-"](23, 23)
-ans2 = operations["/"](23, 23)
-ans3 = operations["*"](23, 23)
+# ans = operations["+"](23, 23)
+# ans1 = operations["-"](23, 23)
+# ans2 = operations["/"](23, 23)
+# ans3 = operations["*"](23, 23)
 
-print(ans, ans1, ans2, ans3)
+# print(ans, ans1, ans2, ans3)
+
+print("welcome to our calculator...")
+
+
+def calc():
+    num1 = int(input("Enter first digit..."))
+    num2 = int(input("Enter second digit..."))
+    operator = input("Enter the operator... +, -, /, *")
+    ans = operations[operator](num1, num2)
+    print("your ans is...", ans)
+
+
+while (1):
+
+    calc()
+
+    prmpt = input('''would you like to procceed with current sum (y) or start a new calc (n) or exit (e)..?''')
+
+    match prmpt:
+        case "y":
+            print("y")
+            calc()
+        case "n":
+            print("n")
+            calc()
+        case "e":
+            print("e")
+            break
+        case _:
+            print("Invalid key...")
+            
+
