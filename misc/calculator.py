@@ -36,31 +36,33 @@ operations = {
 print("welcome to our calculator...")
 
 
-def calc():
-    num1 = int(input("Enter first digit..."))
+def calc(num1 = None, useFirst = 0):
+
+    if (useFirst != 1):
+        num1 = int(input("Enter first digit..."))
+
     num2 = int(input("Enter second digit..."))
     operator = input("Enter the operator... +, -, /, *")
     ans = operations[operator](num1, num2)
     print("your ans is...", ans)
+    return ans
 
 
 while (1):
 
-    calc()
+    ans = calc()
 
     prmpt = input('''would you like to procceed with current sum (y) or start a new calc (n) or exit (e)..?''')
 
     match prmpt:
         case "y":
             print("y")
-            calc()
+            ans = calc(ans, 1)
         case "n":
             print("n")
-            calc()
+            ans = calc()
         case "e":
             print("e")
             break
         case _:
             print("Invalid key...")
-            
-
