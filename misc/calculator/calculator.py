@@ -1,21 +1,19 @@
-# Calculator
+from art import logo
+
+print(logo)
 
 def add(n1, n2):
     return n1 + n2
 
-
 def subtract(n1, n2):
     return n1 - n2
-
 
 def multiply(n1, n2):
     return n1 * n2
 
-
 def divide(n1, n2):
     # already made sure to avoid division by zero
     return n1 / n2
-
 
 # dictionary with references to the functions as values
 operations = {
@@ -39,12 +37,13 @@ print("welcome to our calculator...")
 def calc(num1 = None, useFirst = 0):
 
     if (useFirst != 1):
-        num1 = int(input("Enter first digit..."))
-
-    num2 = int(input("Enter second digit..."))
+        num1 = float(input("Enter first digit..."))
+        
+    num2 = float(input("Enter second digit..."))
     operator = input("Enter the operator... +, -, /, *")
     ans = operations[operator](num1, num2)
-    print("your ans is...", ans)
+    print(f"your ans for {num1} {operator} {num2} = {ans} ")
+
     return ans
 
 
@@ -66,3 +65,4 @@ while (1):
             break
         case _:
             print("Invalid key...")
+
