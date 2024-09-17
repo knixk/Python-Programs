@@ -37,20 +37,21 @@ print("welcome to our calculator...")
 def calc(num1 = None, useFirst = 0):
 
     if (useFirst != 1):
+        print("inside if")
         num1 = float(input("Enter first digit..."))
-        
+
+    operator = input("Enter the operator... +, -, /, * :")
     num2 = float(input("Enter second digit..."))
-    operator = input("Enter the operator... +, -, /, *")
     ans = operations[operator](num1, num2)
     print(f"your ans for {num1} {operator} {num2} = {ans} ")
 
     return ans
 
 
+ans = calc()
+
+
 while (1):
-
-    ans = calc()
-
     prmpt = input('''would you like to procceed with current sum (y) or start a new calc (n) or exit (e)..?''')
 
     match prmpt:
@@ -65,4 +66,5 @@ while (1):
             break
         case _:
             print("Invalid key...")
+            continue
 
