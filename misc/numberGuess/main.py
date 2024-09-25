@@ -2,10 +2,9 @@ import random
 
 print("Welcome to number guess game")
 
-
 def play():
     
-    number = random.randint(1, 101)
+    number = random.randint(1, 100)
 
     choose_mode = input("choose a mode, e for easy, h for hard: ")
 
