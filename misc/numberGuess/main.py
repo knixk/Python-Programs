@@ -42,10 +42,11 @@ def play():
     else:
         print("You won mate..")
         
-play()
 
-inp = input('wanna play again? (y or n)\n')
-if (inp == 'y'):
-    play()
-else:
-    print("See you again..")
+while (True):
+    play()    
+    inp = input('wanna play again? (y or n)\n')
+    if (inp == 'y'):
+        play()
+    else:
+        print("See you again..")
