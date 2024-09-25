@@ -3,7 +3,6 @@ import random
 print("welcome to blackjack / 21")
 
 not_game_over = True
-
 user_deck = []
 cpu_deck = []
 
@@ -76,7 +75,6 @@ def cpu_deals():
     else:
         print("cpu decided to pass..")
 
-
 def print_score(user_deck, cpu_deck):
     print(f"user_deck: {user_deck}, cpu_deck: {cpu_deck}")
     user_score = calculate_score(user_deck)
@@ -92,14 +90,9 @@ def play(not_game_over):
         
     cpu_deals()
 
-
 def reset_game(user_deck, cpu_deck, not_game_over):
     pass
 
-
-# def keep_playing():
-    
-    
 while (True):
     # deals two cards at first
     for _ in range(2):
