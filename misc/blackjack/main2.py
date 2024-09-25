@@ -1,10 +1,7 @@
 import random
 
-print("welcome to blackjack / 24")
+print("welcome to blackjack / 21")
 
-# BLACKJACK = 21
-# ACE_SMALLER = 1
-# ACE_BIGGER = 2
 not_game_over = True
 
 user_deck = []
@@ -35,10 +32,24 @@ def calculate_score(cards):
     return total
 
 def check_game_over():
+    
+    # it's just the initial two cards
+    if (len(user_deck) == 2):
+        return False
+
     user_score = calculate_score(user_deck)
     cpu_score = calculate_score(cpu_deck)
+    
+    if (user_score == 0 or cpu_score == 0):
+        print("It's a draw")
+        return True
 
-    if (user_score == 0 or cpu_score == 0 or user_score > 21):
+    elif (user_score > 21):
+        print("you lose buddy..")
+        return True
+
+    elif (cpu_score > 21):
+        print("You won mate..")
         return True
 
     return False
@@ -50,14 +61,10 @@ def user_deals():
     if (ans == "y"):
         # deal another card..
         user_deck.append(deal_card())
-        pass
-    elif (ans == "n"):
+        return True
+    else:
         # show the final show and check if win or lose..
-        pass
-
-    print(f"user_deck: {user_deck}, cpu_deck: {cpu_deck}")
-    user_score = calculate_score(user_deck)
-    print(user_score, " : Your score")
+        return False
 
 def cpu_deals():
     """simple algo for cpu to teach until less than 17"""
@@ -66,38 +73,57 @@ def cpu_deals():
     if (cpu_score < 17):
         cpu_deck.append(deal_card())
         print("cpu decided to deal")
+    else:
+        print("cpu decided to pass..")
 
-    print("cpu decided to pass..")
 
-# deals two cards at first
-for _ in range(2):
-    user_deck.append(deal_card())
-    cpu_deck.append(deal_card())
-
-print(f"user_deck: {user_deck}, cpu_deck: {cpu_deck}")
-
-def play():
-    # prmpt = input("would you like to draw another card?")
+def print_score(user_deck, cpu_deck):
+    print(f"user_deck: {user_deck}, cpu_deck: {cpu_deck}")
     user_score = calculate_score(user_deck)
     cpu_score = calculate_score(cpu_deck)
-
     print(user_score, " : Your score")
-    print(cpu_score, " : CPU's score")
+    print(cpu_score, " : CPU score")
 
-    user_deals()
+def play(not_game_over):
+    # whether the players should deal or not upto them...
+    ans = user_deals()
+    if (ans != True):
+        not_game_over = not check_game_over()
+        
     cpu_deals()
 
-while (not_game_over):
-    ans = check_game_over()
-    if (ans):
-        not_game_over = False
+
+def reset_game(user_deck, cpu_deck, not_game_over):
+    pass
+
+
+# def keep_playing():
+    
+    
+while (True):
+    # deals two cards at first
+    for _ in range(2):
+        user_deck.append(deal_card())
+        cpu_deck.append(deal_card())
+
+    while (not_game_over):
+        print('----------------------- \n')
+        print_score(user_deck, cpu_deck)
+        ans = check_game_over()
+        if (ans):
+            not_game_over = False
+            break
+        play(not_game_over)
+    
+    ques = input("would u like to play again..?")
+    if (ques == "y"):
+            user_deck = []
+            cpu_deck = []
+            not_game_over = True
+            # reset_game(user_deck, cpu_deck, not_game_over)
+    else:
         break
-    play()
-
-
-
-
-
+            
 
 
 
