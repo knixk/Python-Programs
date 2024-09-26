@@ -1,0 +1,11 @@
+# Defining the project requirements
+
+It is a good idea to list down the features/requirements of our SMS bot. We want
+it to be able to respond to five different kinds of messages:
+
+• “today” should return the details of all games happening today
+• “tomorrow” should return the details of all games happening tomorrow
+• “complete” should return the complete group stage details
+• A country code (like “BRA” for Brazil) should return information related to
+that particular country
+• “list” should return all of the FIFA country codes
