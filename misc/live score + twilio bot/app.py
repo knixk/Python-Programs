@@ -13,7 +13,30 @@ countries = ['KOR', 'PAN', 'MEX', 'ENG', 'COL', 'JPN', 'POL', 'SEN',
 
 import requests
 html = requests.get(urls['teams']).json()
-html = html['groups']
+html = html['groups'][0]
+html = html['teams']
 
-for match in html:
-    print(match['letter'])
+# print(html)
+
+print("Data starts here...")
+
+for data in html:
+    print('\n')
+    print('==========================================')
+    print('\n')
+    print("name: ", data['name'])
+    print("wins: ", data['wins'])
+    print("losses: ", data['losses'])
+    print("games_played: ", data['games_played'])
+
+print('==========================================')
+
+
+
+
+
+# for match in html:
+    # for data in match['teams']:
+        # print(data) 
+    # print(match)
+# 
