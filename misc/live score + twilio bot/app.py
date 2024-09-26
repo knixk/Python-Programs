@@ -1,3 +1,9 @@
+import requests
+import os
+from flask import Flask, request
+from dateutil import parser, tz
+from twilio.twiml.messaging_response import MessagingResponse
+
 urls = {
     'group': 'https://worldcup.sfg.io/teams/group_results',
     'country': 'https://worldcup.sfg.io/matches/country?fifa_code=',
@@ -11,27 +17,30 @@ countries = ['KOR', 'PAN', 'MEX', 'ENG', 'COL', 'JPN', 'POL', 'SEN',
 'DEN', 'AUS', 'FRA', 'PER', 'ARG', 'CRO', 'BRA', 'CRC',
 'NGA', 'ISL', 'SRB', 'SUI', 'BEL', 'TUN', 'GER', 'SWE']
 
-import requests
 html = requests.get(urls['teams']).json()
 html = html['groups'][0]
 html = html['teams']
 
 # print(html)
+print('\n')
+print("Data starts here... ")
+print("Teams in GROUP A:")
 
-print("Data starts here...")
-
-for data in html:
+def printSep():
     print('\n')
     print('==========================================')
     print('\n')
+
+
+# main code
+for data in html:
+    printSep()
     print("name: ", data['name'])
     print("wins: ", data['wins'])
     print("losses: ", data['losses'])
     print("games_played: ", data['games_played'])
 
 print('==========================================')
-
-
 
 
 
