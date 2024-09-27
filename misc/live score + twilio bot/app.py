@@ -2,7 +2,7 @@ import requests
 import os
 from flask import Flask, request
 from dateutil import parser, tz
-from twilio.twiml.messaging_response import MessagingResponse
+# from twilio.twiml.messaging_response import MessagingResponse
 
 urls = {
     'group': 'https://worldcup.sfg.io/teams/group_results',
@@ -17,9 +17,12 @@ countries = ['KOR', 'PAN', 'MEX', 'ENG', 'COL', 'JPN', 'POL', 'SEN',
 'DEN', 'AUS', 'FRA', 'PER', 'ARG', 'CRO', 'BRA', 'CRC',
 'NGA', 'ISL', 'SRB', 'SUI', 'BEL', 'TUN', 'GER', 'SWE']
 
-html = requests.get(urls['teams']).json()
-html = html['groups'][0]
-html = html['teams']
+try:
+    html = requests.get(urls['teams']).json()
+    html = html['groups'][0]
+    html = html['teams']
+except:
+    print("Error fetching data...")
 
 # print(html)
 print('\n')
@@ -31,7 +34,6 @@ def printSep():
     print('==========================================')
     print('\n')
 
-
 # main code
 for data in html:
     printSep()
@@ -41,7 +43,6 @@ for data in html:
     print("games_played: ", data['games_played'])
 
 print('==========================================')
-
 
 
 # for match in html:
