@@ -1,0 +1,8 @@
+https://github.com/twilio/twilio-python/blob/main/twilio/twiml/messaging_response.py
+https://stackoverflow.com/questions/29358403/no-module-named-urllib-parse-how-should-i-install-it
+https://realpython.com/python-requests/
+https://drive.google.com/drive/u/0/folders/1wi8EWASqAXW78RH0P3zEEhYeXS5vTWaO
+https://chatgpt.com/c/66f579d6-745c-8002-a127-8eeabe6c9b6b
+https://www.instagram.com/
+https://www.youtube.com/
+https://linkedin.com/

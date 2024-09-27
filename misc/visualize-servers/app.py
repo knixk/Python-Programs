@@ -10,7 +10,7 @@ except:
 
 
 # print(html.text)
-print(html.json())
+# print(html.json())
 print("============")
 final_url = urlparse(url).netloc
 print(final_url)
