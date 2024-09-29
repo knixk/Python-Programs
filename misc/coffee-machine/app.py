@@ -6,6 +6,8 @@ resources = {
     "coffee": 100
 }
 
+profit = 0
+
 MENU = {
     "espresso": {
         "ingredients": {
@@ -39,32 +41,51 @@ COIN_VALUES = {
     "penny": 0.01,
 }
 
-
 welcome = "welcome to coffee machine"
 print(welcome)
 
 # sleep(1)
 # exit()
-ans = input("what would you like to drink? \n (e) espresso, (l) latte, (c) cuppucinno \n >")
 
-if (ans == 'e'):
-    item = MENU["espresso"]["ingredients"]
-    if (resources['coffee'] >= item['coffee']):
-        pass
-    if (resources['mlik'] >= item['mlik']):
-        pass
-    if (resources['mlik'] >= item['mlik']):
-        pass
+# if (ans == 'e'):
+#     item = MENU["espresso"]["ingredients"]
+#     if (resources['coffee'] >= item['coffee']):
+#         pass
+#     if (resources['mlik'] >= item['mlik']):
+#         pass
+#     if (resources['mlik'] >= item['mlik']):
+#         pass
     
     
     # print(MENU["espresso"]["ingredients"])
-    pass
-elif (ans == 'l'):
-    pass
-elif (ans == 'c'):
-    pass
-else:
-    pass
+#     pass
+# elif (ans == 'l'):
+#     pass
+# elif (ans == 'c'):
+#     pass
+# else:
+#     pass
+
+is_on = True
+
+while (is_on):
+    
+    ans = input("what would you like to drink? \n (e) espresso, (l) latte, (c) cappuccino \n >")
+    if ans == "off":
+        exit()
+    elif ans == "report":
+        print(resources)    
+    elif ans == "e":
+        choice = "espresso"
+    elif ans == "l":
+        choice = "latte"
+    elif ans == "c":
+        choice = "cappuccino"
+    else:
+        print("choose a correct option pls..")    
+        
+    print(MENU[choice])
+
 
 
 # 1. get user choice
