@@ -50,12 +50,14 @@ def insert_coins():
     return total
 
 def purchase_drink():
+    # for item in choice
     pass
 
 def is_resources_sufficient(choice):
     """Returns boolean if we have enough resources for the drink to make"""
     # print(choice)
     for item in choice:
+        print(item)
         if (choice[item] >= resources[item]):
             return False
 
@@ -89,6 +91,8 @@ while (is_on):
     if (res):
         print(f"You need to pay {drink['cost']}$ for the drink" )
         coins = insert_coins()
+        purchase_drink(drink)
+
     # print(drink)
 
     # print(coins)
