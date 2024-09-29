@@ -41,9 +41,25 @@ COIN_VALUES = {
     "penny": 0.01,
 }
 
-def is_resources_sufficient(choice):
-    print(choice)
+def insert_coins():
+    """Returns the total sum of the coins inserted"""
+    total = int(input("How many quarters? (0.25$) ")) * 0.25
+    total += int(input("How many dimes? (0.10$) ")) * 0.10
+    total += int(input("How many nickles? (0.05$) ")) * 0.05
+    total += int(input("How many pennies? (0.01$) ")) * 0.01
+    return total
+
+def purchase_drink():
     pass
+
+def is_resources_sufficient(choice):
+    """Returns boolean if we have enough resources for the drink to make"""
+    # print(choice)
+    for item in choice:
+        if (choice[item] >= resources[item]):
+            return False
+
+    return True
 
 welcome = "welcome to coffee machine"
 print(welcome)
@@ -67,10 +83,15 @@ while (is_on):
         print("choose a correct option pls..")    
         continue
 
-        
+    
     drink = MENU[choice]
-    is_resources_sufficient(drink['ingredients'])
+    res = is_resources_sufficient(drink['ingredients'])
+    if (res):
+        print(f"You need to pay {drink['cost']}$ for the drink" )
+        coins = insert_coins()
     # print(drink)
+
+    # print(coins)
 
 
 # To do
