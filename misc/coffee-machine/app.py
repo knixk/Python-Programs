@@ -41,30 +41,12 @@ COIN_VALUES = {
     "penny": 0.01,
 }
 
+def is_resources_sufficient(choice):
+    print(choice)
+    pass
+
 welcome = "welcome to coffee machine"
 print(welcome)
-
-# sleep(1)
-# exit()
-
-# if (ans == 'e'):
-#     item = MENU["espresso"]["ingredients"]
-#     if (resources['coffee'] >= item['coffee']):
-#         pass
-#     if (resources['mlik'] >= item['mlik']):
-#         pass
-#     if (resources['mlik'] >= item['mlik']):
-#         pass
-    
-    
-    # print(MENU["espresso"]["ingredients"])
-#     pass
-# elif (ans == 'l'):
-#     pass
-# elif (ans == 'c'):
-#     pass
-# else:
-#     pass
 
 is_on = True
 
@@ -83,11 +65,15 @@ while (is_on):
         choice = "cappuccino"
     else:
         print("choose a correct option pls..")    
+        continue
+
         
-    print(MENU[choice])
+    drink = MENU[choice]
+    is_resources_sufficient(drink['ingredients'])
+    # print(drink)
 
 
-
+# To do
 # 1. get user choice
 # 2. check if that choice can be made
 # 3. show the user price
