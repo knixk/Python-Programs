@@ -17,12 +17,16 @@ while True:
 
     find_drink = my_menu.find_drink(drink)
     cost = find_drink.cost
-    print(f"Please pay {cost}$")
-    # coins = my_money.process_coins()
-    payment_successful = my_money.make_payment(cost)
+    can_make = my_maker.is_resource_sufficient(find_drink)
 
-    # print(find_drink)
-    my_maker.make_coffee(find_drink)
+
+    if (can_make):
+        print(f"Please pay {cost}$")
+        payment_successful = my_money.make_payment(cost)
+
+        if (payment_successful):
+             my_maker.make_coffee(find_drink)
+            
 
     my_maker.report()
     my_money.report()

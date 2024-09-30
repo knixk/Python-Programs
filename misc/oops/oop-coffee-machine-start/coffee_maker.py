@@ -24,6 +24,13 @@ class CoffeeMaker:
 
     def make_coffee(self, order):
         """Deducts the required ingredients from the resources."""
+        make_coffee = True
         for item in order.ingredients:
-            self.resources[item] -= order.ingredients[item]
-        print(f"Here is your {order.name} ☕️. Enjoy!")
+            if (self.resources[item] >= order.ingredients[item]):
+                self.resources[item] -= order.ingredients[item]
+            else:
+                print(f"Not enough {self.resources[item]}")    
+                make_coffee = False
+
+        if (make_coffee):
+            print(f"Here is your {order.name} ☕️. Enjoy!")
