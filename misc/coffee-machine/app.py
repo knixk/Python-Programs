@@ -64,8 +64,11 @@ def is_resources_sufficient(choice):
 
     return True
 
+# def transaction_successful():
+    
 def use_machine():
         
+    change = 0
     global profit
     
     ans = input("what would you like to drink? \n (e) espresso, (l) latte, (c) cappuccino \n >")
@@ -90,10 +93,10 @@ def use_machine():
         coins = insert_coins()
         if (coins < drink['cost']):
             print("You need to add ... more coins")
-            
-        profit += drink['cost']
-        change = round(coins - drink['cost'], 2) 
-        # print("Enjoy your drink... ☕")
+        else:
+            profit += drink['cost']
+            change = round(coins - drink['cost'], 2) 
+            print("Enjoy your drink... ☕")
 
     if (change > 0):
         print(f"Here is your change... {change}")
