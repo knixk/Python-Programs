@@ -2,6 +2,7 @@ from time import sleep
 
 welcome = "welcome to coffee machine"
 print(welcome)
+sleep(1)
 
 profit = 0
 is_on = True
@@ -87,11 +88,14 @@ def use_machine():
     if (res):
         print(f"You need to pay {drink['cost']}$ for the drink" )
         coins = insert_coins()
+        if (coins < drink['cost']):
+            print("You need to add ... more coins")
+            
         profit += drink['cost']
         change = round(coins - drink['cost'], 2) 
-        print("Enjoy your drink... ☕")
+        # print("Enjoy your drink... ☕")
 
-    if (change):
+    if (change > 0):
         print(f"Here is your change... {change}")
 
 
