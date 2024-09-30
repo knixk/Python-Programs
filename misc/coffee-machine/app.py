@@ -1,14 +1,18 @@
 from time import sleep
 
+welcome = "welcome to coffee machine"
+print(welcome)
+
+profit = 0
+is_on = True
+
 resources = {
     "water": 500,
     "milk": 250,
     "coffee": 100
 }
 
-profit = 0
-
-MENU = {
+MENU = { 
     "espresso": {
         "ingredients": {
             "water": 50,
@@ -49,10 +53,6 @@ def insert_coins():
     total += int(input("How many pennies? (0.01$) ")) * 0.01
     return total
 
-def purchase_drink():
-    # for item in choice
-    pass
-
 def is_resources_sufficient(choice):
     """Returns boolean if we have enough resources for the drink to make"""
     # print(choice)
@@ -63,12 +63,9 @@ def is_resources_sufficient(choice):
 
     return True
 
-welcome = "welcome to coffee machine"
-print(welcome)
-
-is_on = True
-
-while (is_on):
+def use_machine():
+        
+    global profit
     
     ans = input("what would you like to drink? \n (e) espresso, (l) latte, (c) cappuccino \n >")
     if ans == "off":
@@ -83,26 +80,29 @@ while (is_on):
         choice = "cappuccino"
     else:
         print("choose a correct option pls..")    
-        continue
 
-    
     drink = MENU[choice]
     res = is_resources_sufficient(drink['ingredients'])
+    
     if (res):
         print(f"You need to pay {drink['cost']}$ for the drink" )
         coins = insert_coins()
-        purchase_drink(drink)
+        profit += drink['cost']
+        change = round(coins - drink['cost'], 2) 
+        print("Enjoy your drink... ☕")
 
-    # print(drink)
+    if (change):
+        print(f"Here is your change... {change}")
 
-    # print(coins)
 
+while (is_on):
+    use_machine()
+    
 
 # To do
 # 1. get user choice
 # 2. check if that choice can be made
 # 3. show the user price
 # 4. ask user to enter the money
-
 # 5. check if it's enough and give the coffee
 # 6. ask again
