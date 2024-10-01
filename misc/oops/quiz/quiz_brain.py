@@ -1,15 +1,12 @@
-from data import question_data
-from question_model import Question
+class QuizBrain:
+    def __init__(self, q_list = []):
+        self.question_number = 0
+        self.question_list = q_list
 
-ques1 = Question("Biggest country?", "Russia")
-print(ques1.text, ques1.ans)
-
-
-
-question_bank = []
-
-for item in question_data:
-    ques = Question(item['text'], item['answer'])
-    question_bank.append(ques)
-
-print(question_bank)
+    def next_question(self):
+        """Returns the next question"""
+        ques = self.question_list[self.question_number]
+        print(ques['text'])
+        ans = input('Enter your ans..')
+        self.question_number += 1
+        
