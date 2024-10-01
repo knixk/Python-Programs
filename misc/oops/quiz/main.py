@@ -11,8 +11,7 @@ for item in question_data:
     ques = Question(item['text'], item['answer'])
     question_bank.append(ques)
 
-print(question_bank)
+# print(question_bank)
 
-
-brain = QuizBrain()
-
+quiz = QuizBrain(question_bank)
+quiz.next_question()
