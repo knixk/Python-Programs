@@ -51,6 +51,10 @@ def random_walk(steps):
         distance = randint(0, 100)
         tt.fd(distance)
         tt.right(angle)
-random_walk(100)
+
+
+# random_walk(100)
 
 my_screen.exitonclick()
+
+# so far we have the code for random walk..
